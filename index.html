@@ -1,0 +1,1349 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>KodeCharya | Fine-Tuning the Future of Local AI</title>
+        <meta
+            name="description"
+            content="KodeCharya is an AI/ML engineer and open-source contributor specializing in local LLM fine-tuning, optimized developer models, and Ollama-ready releases."
+        />
+        <style>
+            :root {
+                color-scheme: dark;
+                --bg: #0b0f14;
+                --bg-elev: #111822;
+                --bg-elev-2: #151f2b;
+                --border: rgba(148, 163, 184, 0.16);
+                --text: #e5eef7;
+                --muted: #9aa9b9;
+                --faint: #6f7d8f;
+                --green: #39e58c;
+                --cyan: #39d0ff;
+                --cyan-soft: rgba(57, 208, 255, 0.14);
+                --green-soft: rgba(57, 229, 140, 0.14);
+                --shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
+                --radius: 16px;
+                --radius-sm: 12px;
+                --max: 1180px;
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+
+            html {
+                scroll-behavior: smooth;
+            }
+
+            body {
+                margin: 0;
+                font-family:
+                    Inter,
+                    ui-sans-serif,
+                    system-ui,
+                    -apple-system,
+                    BlinkMacSystemFont,
+                    "Segoe UI",
+                    sans-serif;
+                background:
+                    radial-gradient(
+                        1200px 700px at 15% -10%,
+                        rgba(57, 208, 255, 0.08),
+                        transparent 60%
+                    ),
+                    radial-gradient(
+                        900px 560px at 100% 0%,
+                        rgba(57, 229, 140, 0.06),
+                        transparent 55%
+                    ),
+                    linear-gradient(180deg, #071018 0%, #0a0f15 100%);
+                color: var(--text);
+                line-height: 1.5;
+                text-rendering: optimizeLegibility;
+                -webkit-font-smoothing: antialiased;
+            }
+
+            a {
+                color: inherit;
+                text-decoration: none;
+            }
+
+            .page {
+                min-height: 100vh;
+            }
+
+            .shell {
+                width: min(var(--max), calc(100% - 32px));
+                margin: 0 auto;
+            }
+
+            .topbar {
+                position: sticky;
+                top: 0;
+                z-index: 50;
+                backdrop-filter: blur(18px);
+                background: rgba(7, 12, 18, 0.7);
+                border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+            }
+
+            .topbar-inner {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 16px;
+                padding: 14px 0;
+            }
+
+            .brand {
+                display: inline-flex;
+                align-items: center;
+                gap: 12px;
+                font-weight: 700;
+                letter-spacing: 0;
+                min-width: 0;
+            }
+
+            .brand-mark {
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, var(--cyan), var(--green));
+                box-shadow: 0 0 18px rgba(57, 208, 255, 0.55);
+                flex: 0 0 auto;
+            }
+
+            .brand span {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .nav {
+                display: flex;
+                gap: 18px;
+                flex-wrap: wrap;
+                justify-content: flex-end;
+                color: var(--muted);
+                font-size: 0.95rem;
+            }
+
+            .nav a:hover,
+            .nav a:focus-visible {
+                color: var(--text);
+            }
+
+            .section {
+                padding: 88px 0;
+            }
+
+            .hero {
+                padding-top: 56px;
+            }
+
+            .hero-grid {
+                display: grid;
+                grid-template-columns: 1.12fr 0.88fr;
+                gap: 28px;
+                align-items: center;
+            }
+
+            .eyebrow {
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                padding: 8px 12px;
+                border: 1px solid var(--border);
+                border-radius: 999px;
+                background: rgba(255, 255, 255, 0.02);
+                color: var(--muted);
+                font-size: 0.9rem;
+                margin-bottom: 22px;
+            }
+
+            .eyebrow-dot {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: var(--green);
+                box-shadow: 0 0 12px rgba(57, 229, 140, 0.6);
+            }
+
+            h1,
+            h2,
+            h3,
+            p {
+                margin: 0;
+            }
+
+            h1 {
+                font-size: 4.4rem;
+                line-height: 1.02;
+                letter-spacing: 0;
+                max-width: 12ch;
+            }
+
+            .lead {
+                margin-top: 18px;
+                max-width: 58ch;
+                color: var(--muted);
+                font-size: 1.05rem;
+            }
+
+            .hero-actions {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 12px;
+                margin-top: 28px;
+            }
+
+            .btn {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                min-height: 46px;
+                padding: 0 16px;
+                border-radius: 12px;
+                border: 1px solid transparent;
+                font-weight: 600;
+                transition:
+                    transform 160ms ease,
+                    border-color 160ms ease,
+                    background 160ms ease,
+                    color 160ms ease;
+                cursor: pointer;
+                user-select: none;
+            }
+
+            .btn:hover {
+                transform: translateY(-1px);
+            }
+
+            .btn-primary {
+                background: linear-gradient(
+                    135deg,
+                    rgba(57, 208, 255, 0.18),
+                    rgba(57, 229, 140, 0.18)
+                );
+                border-color: rgba(57, 208, 255, 0.34);
+                color: var(--text);
+            }
+
+            .btn-secondary {
+                background: rgba(255, 255, 255, 0.02);
+                border-color: var(--border);
+                color: var(--muted);
+            }
+
+            .meta-row {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin-top: 22px;
+                color: var(--faint);
+                font-size: 0.92rem;
+            }
+
+            .meta-pill {
+                padding: 7px 10px;
+                border-radius: 999px;
+                background: rgba(255, 255, 255, 0.02);
+                border: 1px solid rgba(148, 163, 184, 0.12);
+            }
+
+            .terminal {
+                border: 1px solid rgba(148, 163, 184, 0.16);
+                border-radius: var(--radius);
+                background:
+                    linear-gradient(
+                        180deg,
+                        rgba(255, 255, 255, 0.04),
+                        rgba(255, 255, 255, 0.015)
+                    ),
+                    linear-gradient(180deg, #0d1420 0%, #0b1017 100%);
+                box-shadow: var(--shadow);
+                overflow: hidden;
+            }
+
+            .terminal-top {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 14px 16px;
+                border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+                background: rgba(255, 255, 255, 0.02);
+            }
+
+            .traffic {
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+            }
+
+            .red {
+                background: #ff5f57;
+            }
+            .amber {
+                background: #febc2e;
+            }
+            .green {
+                background: #28c840;
+            }
+
+            .terminal-title {
+                margin-left: 8px;
+                color: var(--muted);
+                font-size: 0.92rem;
+            }
+
+            .terminal-body {
+                padding: 18px;
+                font-family:
+                    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+                    "Liberation Mono", monospace;
+                color: #d5e9de;
+                font-size: 0.96rem;
+                min-height: 340px;
+            }
+
+            .terminal-line {
+                display: block;
+                margin-bottom: 12px;
+                word-break: break-word;
+            }
+
+            .prompt {
+                color: var(--green);
+            }
+
+            .cursor {
+                display: inline-block;
+                width: 9px;
+                height: 1.05em;
+                vertical-align: -0.2em;
+                background: var(--green);
+                margin-left: 2px;
+                animation: blink 1s steps(1) infinite;
+            }
+
+            .code-box {
+                margin-top: 18px;
+                padding: 16px;
+                border-radius: 14px;
+                background: rgba(7, 14, 20, 0.9);
+                border: 1px solid rgba(57, 208, 255, 0.18);
+            }
+
+            .code-row {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                justify-content: space-between;
+                flex-wrap: wrap;
+            }
+
+            .code-inline {
+                color: var(--cyan);
+                font-weight: 600;
+            }
+
+            .copy-btn {
+                border: 1px solid rgba(57, 208, 255, 0.28);
+                background: rgba(57, 208, 255, 0.08);
+                color: var(--text);
+                min-height: 38px;
+                padding: 0 12px;
+                border-radius: 10px;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                font-weight: 600;
+                cursor: pointer;
+            }
+
+            .copy-btn:hover {
+                background: rgba(57, 208, 255, 0.14);
+            }
+
+            .section-head {
+                display: flex;
+                justify-content: space-between;
+                gap: 18px;
+                align-items: end;
+                margin-bottom: 24px;
+            }
+
+            .section-title {
+                font-size: 2.1rem;
+                letter-spacing: 0;
+            }
+
+            .section-subtitle {
+                color: var(--muted);
+                max-width: 58ch;
+                font-size: 0.98rem;
+            }
+
+            .about-grid {
+                display: grid;
+                grid-template-columns: 1fr 1.1fr;
+                gap: 24px;
+                align-items: start;
+            }
+
+            .panel {
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+                background: rgba(255, 255, 255, 0.02);
+                overflow: hidden;
+            }
+
+            .panel-inner {
+                padding: 22px;
+            }
+
+            .panel p {
+                color: var(--muted);
+            }
+
+            .stack-grid {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 12px;
+            }
+
+            .stack-group {
+                border: 1px solid rgba(148, 163, 184, 0.14);
+                border-radius: 14px;
+                padding: 16px;
+                background: linear-gradient(
+                    180deg,
+                    rgba(255, 255, 255, 0.02),
+                    rgba(255, 255, 255, 0.01)
+                );
+                min-height: 100%;
+            }
+
+            .stack-group h3 {
+                font-size: 0.98rem;
+                margin-bottom: 12px;
+                color: var(--text);
+            }
+
+            .chips {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .chip {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 8px 10px;
+                border-radius: 999px;
+                border: 1px solid rgba(148, 163, 184, 0.14);
+                background: rgba(255, 255, 255, 0.02);
+                color: var(--text);
+                font-size: 0.9rem;
+            }
+
+            .chip::before {
+                content: "";
+                width: 7px;
+                height: 7px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, var(--cyan), var(--green));
+            }
+
+            .projects-grid {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 18px;
+            }
+
+            .project-directory {
+                margin-top: 22px;
+            }
+
+            .directory-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+                gap: 12px;
+            }
+
+            .mini-project {
+                display: grid;
+                gap: 8px;
+                min-height: 118px;
+                padding: 16px;
+                border-radius: 14px;
+                border: 1px solid rgba(148, 163, 184, 0.14);
+                background: rgba(255, 255, 255, 0.02);
+                transition:
+                    transform 160ms ease,
+                    border-color 160ms ease,
+                    background 160ms ease;
+            }
+
+            .mini-project:hover {
+                transform: translateY(-1px);
+                border-color: rgba(57, 208, 255, 0.24);
+                background: rgba(57, 208, 255, 0.05);
+            }
+
+            .mini-project h3 {
+                font-size: 1rem;
+                letter-spacing: 0;
+                line-height: 1.2;
+            }
+
+            .mini-project p {
+                color: var(--muted);
+                font-size: 0.9rem;
+            }
+
+            .mini-project .mini-tag {
+                display: inline-flex;
+                width: fit-content;
+                padding: 6px 9px;
+                border-radius: 999px;
+                border: 1px solid rgba(57, 208, 255, 0.18);
+                background: rgba(57, 208, 255, 0.06);
+                color: #ccefff;
+                font-size: 0.78rem;
+            }
+
+            .project-card {
+                border: 1px solid rgba(148, 163, 184, 0.16);
+                border-radius: var(--radius);
+                background:
+                    linear-gradient(
+                        180deg,
+                        rgba(255, 255, 255, 0.025),
+                        rgba(255, 255, 255, 0.01)
+                    ),
+                    #0f1620;
+                overflow: hidden;
+                box-shadow: var(--shadow);
+            }
+
+            .project-card-inner {
+                padding: 22px;
+                display: grid;
+                gap: 16px;
+                height: 100%;
+            }
+
+            .project-top {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: space-between;
+                gap: 12px;
+            }
+
+            .project-title {
+                font-size: 1.35rem;
+                letter-spacing: 0;
+            }
+
+            .tag {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 7px 10px;
+                border-radius: 999px;
+                color: #bff4d6;
+                background: var(--green-soft);
+                border: 1px solid rgba(57, 229, 140, 0.22);
+                font-size: 0.86rem;
+                white-space: nowrap;
+            }
+
+            .project-copy {
+                color: var(--muted);
+            }
+
+            .project-foot {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 12px;
+                flex-wrap: wrap;
+                margin-top: auto;
+            }
+
+            .command {
+                padding: 12px 14px;
+                border-radius: 12px;
+                border: 1px solid rgba(57, 208, 255, 0.18);
+                background: rgba(57, 208, 255, 0.05);
+                color: #d9f6ff;
+                font-family:
+                    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+                    "Liberation Mono", monospace;
+                font-size: 0.92rem;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            .footer {
+                padding: 36px 0 56px;
+                border-top: 1px solid rgba(148, 163, 184, 0.12);
+                margin-top: 36px;
+            }
+
+            .footer-inner {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 18px;
+                flex-wrap: wrap;
+            }
+
+            .socials {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .icon-btn {
+                width: 44px;
+                height: 44px;
+                display: inline-grid;
+                place-items: center;
+                border-radius: 12px;
+                border: 1px solid rgba(148, 163, 184, 0.16);
+                background: rgba(255, 255, 255, 0.02);
+                color: var(--text);
+                transition:
+                    transform 160ms ease,
+                    border-color 160ms ease,
+                    background 160ms ease;
+            }
+
+            .icon-btn:hover {
+                transform: translateY(-1px);
+                border-color: rgba(57, 208, 255, 0.32);
+                background: rgba(57, 208, 255, 0.08);
+            }
+
+            .contact {
+                display: flex;
+                gap: 12px;
+                align-items: center;
+                flex-wrap: wrap;
+                color: var(--muted);
+            }
+
+            .contact a {
+                color: var(--text);
+                border-bottom: 1px solid rgba(57, 208, 255, 0.25);
+            }
+
+            .toast {
+                position: fixed;
+                left: 50%;
+                bottom: 22px;
+                transform: translateX(-50%) translateY(18px);
+                opacity: 0;
+                pointer-events: none;
+                padding: 12px 14px;
+                border-radius: 12px;
+                border: 1px solid rgba(57, 229, 140, 0.24);
+                background: rgba(10, 16, 24, 0.94);
+                color: var(--text);
+                box-shadow: var(--shadow);
+                transition:
+                    opacity 180ms ease,
+                    transform 180ms ease;
+                z-index: 60;
+            }
+
+            .toast.is-visible {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+
+            .sr-only {
+                position: absolute;
+                width: 1px;
+                height: 1px;
+                padding: 0;
+                margin: -1px;
+                overflow: hidden;
+                clip: rect(0, 0, 0, 0);
+                border: 0;
+            }
+
+            @keyframes blink {
+                50% {
+                    opacity: 0;
+                }
+            }
+
+            @media (max-width: 960px) {
+                .hero-grid,
+                .about-grid,
+                .projects-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .section-head {
+                    align-items: start;
+                    flex-direction: column;
+                }
+
+                h1 {
+                    max-width: 14ch;
+                    font-size: 3.4rem;
+                }
+
+                .section-title {
+                    font-size: 1.8rem;
+                }
+            }
+
+            @media (max-width: 640px) {
+                .shell {
+                    width: min(var(--max), calc(100% - 20px));
+                }
+
+                .section {
+                    padding: 64px 0;
+                }
+
+                .topbar-inner {
+                    align-items: start;
+                    flex-direction: column;
+                }
+
+                .nav {
+                    justify-content: flex-start;
+                    gap: 12px;
+                }
+
+                .terminal-body {
+                    min-height: 260px;
+                    font-size: 0.9rem;
+                }
+
+                .stack-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                h1 {
+                    font-size: 2.8rem;
+                }
+
+                .footer-inner {
+                    align-items: start;
+                    flex-direction: column;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="page">
+            <header class="topbar">
+                <div class="shell topbar-inner">
+                    <a class="brand" href="#top" aria-label="KodeCharya home">
+                        <span class="brand-mark" aria-hidden="true"></span>
+                        <span>KodeCharya</span>
+                    </a>
+                    <nav class="nav" aria-label="Primary">
+                        <a href="#about">About</a>
+                        <a href="#models">Models</a>
+                        <a href="#contact">Contact</a>
+                    </nav>
+                </div>
+            </header>
+
+            <main id="top">
+                <section class="section hero" data-reveal>
+                    <div class="shell hero-grid">
+                        <div>
+                            <div class="eyebrow">
+                                <span
+                                    class="eyebrow-dot"
+                                    aria-hidden="true"
+                                ></span>
+                                Local AI Engineering
+                            </div>
+                            <h1>
+                                KodeCharya | Fine-Tuning the Future of Local AI
+                            </h1>
+                            <p class="lead">
+                                AI/ML developer creating highly optimized,
+                                task-specific language models for local
+                                execution.
+                            </p>
+                            <div class="hero-actions">
+                                <a class="btn btn-primary" href="#models"
+                                    >Explore Models</a
+                                >
+                                <a class="btn btn-secondary" href="#about"
+                                    >View Stack</a
+                                >
+                            </div>
+                            <div class="meta-row" aria-label="Highlights">
+                                <span class="meta-pill"
+                                    >Open-source contributor</span
+                                >
+                                <span class="meta-pill"
+                                    >Local-first inference</span
+                                >
+                                <span class="meta-pill"
+                                    >Ollama-ready releases</span
+                                >
+                            </div>
+                        </div>
+
+                        <div class="terminal" aria-label="Terminal preview">
+                            <div class="terminal-top">
+                                <span
+                                    class="traffic red"
+                                    aria-hidden="true"
+                                ></span>
+                                <span
+                                    class="traffic amber"
+                                    aria-hidden="true"
+                                ></span>
+                                <span
+                                    class="traffic green"
+                                    aria-hidden="true"
+                                ></span>
+                                <span class="terminal-title"
+                                    >terminal://local-ai</span
+                                >
+                            </div>
+                            <div class="terminal-body">
+                                <span class="terminal-line"
+                                    ><span class="prompt">user@localhost</span
+                                    >:~$ ollama run
+                                    kodecharya/fine-phi4-mini</span
+                                >
+                                <span class="terminal-line"
+                                    >pulling manifest ... done</span
+                                >
+                                <span class="terminal-line"
+                                    >initializing quantized weights ...
+                                    done</span
+                                >
+                                <span class="terminal-line"
+                                    >loading optimized reasoning stack ...
+                                    done</span
+                                >
+                                <span
+                                    class="terminal-line"
+                                    style="color: var(--cyan)"
+                                    >ready for local coding, debugging, and
+                                    architecture guidance</span
+                                >
+                                <div
+                                    class="code-box"
+                                    role="group"
+                                    aria-label="Featured command"
+                                >
+                                    <div class="code-row">
+                                        <span class="code-inline"
+                                            >ollama run
+                                            kodecharya/fine-phi4-mini</span
+                                        >
+                                        <button
+                                            class="copy-btn"
+                                            type="button"
+                                            data-copy="ollama run kodecharya/fine-phi4-mini"
+                                        >
+                                            Copy
+                                        </button>
+                                    </div>
+                                </div>
+                                <span class="terminal-line"
+                                    >session active<span
+                                        class="cursor"
+                                        aria-hidden="true"
+                                    ></span
+                                ></span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section" id="about" data-reveal>
+                    <div class="shell">
+                        <div class="section-head">
+                            <div>
+                                <h2 class="section-title">
+                                    About and Tech Stack
+                                </h2>
+                            </div>
+                            <p class="section-subtitle">
+                                Specialized in shaping lightweight models,
+                                including Microsoft Phi-4 variants, into
+                                hyper-efficient tools for developer workflows,
+                                local inference, and practical on-device
+                                automation.
+                            </p>
+                        </div>
+
+                        <div class="about-grid">
+                            <article class="panel">
+                                <div class="panel-inner">
+                                    <p>
+                                        KodeCharya focuses on small-model
+                                        optimization with a strong bias toward
+                                        real-world utility. The work centers on
+                                        instruction tuning, compact reasoning
+                                        behavior, and deployment paths that stay
+                                        fast on consumer hardware. The result is
+                                        a toolkit of models that can support
+                                        coding, debugging, and software design
+                                        without depending on remote APIs.
+                                    </p>
+                                </div>
+                            </article>
+
+                            <div
+                                class="stack-grid"
+                                aria-label="Technology categories"
+                            >
+                                <div class="stack-group">
+                                    <h3>Frameworks</h3>
+                                    <div class="chips">
+                                        <span class="chip"
+                                            >Microsoft Phi-4</span
+                                        >
+                                        <span class="chip">Phi-4-mini</span>
+                                    </div>
+                                </div>
+                                <div class="stack-group">
+                                    <h3>ML Ecosystem</h3>
+                                    <div class="chips">
+                                        <span class="chip">PyTorch</span>
+                                        <span class="chip">TensorFlow</span>
+                                        <span class="chip">Keras</span>
+                                        <span class="chip"
+                                            >Hugging Face Transformers</span
+                                        >
+                                    </div>
+                                </div>
+                                <div class="stack-group">
+                                    <h3>Deployment</h3>
+                                    <div class="chips">
+                                        <span class="chip">Ollama</span>
+                                        <span class="chip"
+                                            >GGUF Quantization</span
+                                        >
+                                    </div>
+                                </div>
+                                <div class="stack-group">
+                                    <h3>Focus</h3>
+                                    <div class="chips">
+                                        <span class="chip"
+                                            >Local LLM tuning</span
+                                        >
+                                        <span class="chip"
+                                            >Consumer hardware</span
+                                        >
+                                        <span class="chip"
+                                            >Developer tooling</span
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section" id="models" data-reveal>
+                    <div class="shell">
+                        <div class="section-head">
+                            <div>
+                                <h2 class="section-title">Featured Models</h2>
+                            </div>
+                            <p class="section-subtitle">
+                                Flagship open-source releases tuned for coding
+                                precision, fast reasoning, and local-first use
+                                in terminal workflows.
+                            </p>
+                        </div>
+
+                        <div class="projects-grid">
+                            <article class="project-card">
+                                <div class="project-card-inner">
+                                    <div class="project-top">
+                                        <h3 class="project-title">fine-phi4</h3>
+                                        <span class="tag"
+                                            >Hosted on Ollama Registry</span
+                                        >
+                                    </div>
+                                    <p class="project-copy">
+                                        An advanced, instruction-following
+                                        fine-tune built for deep programming
+                                        logic and complex software architecture
+                                        guidance.
+                                    </p>
+                                    <div class="project-foot">
+                                        <div class="command" id="cmd-fine-phi4">
+                                            ollama run kodecharya/fine-phi4
+                                        </div>
+                                        <button
+                                            class="copy-btn"
+                                            type="button"
+                                            data-copy="ollama run kodecharya/fine-phi4"
+                                        >
+                                            Copy Ollama Command
+                                        </button>
+                                    </div>
+                                </div>
+                            </article>
+
+                            <article class="project-card">
+                                <div class="project-card-inner">
+                                    <div class="project-top">
+                                        <h3 class="project-title">
+                                            fine-phi4-mini
+                                        </h3>
+                                        <span class="tag"
+                                            >Hosted on Ollama Registry</span
+                                        >
+                                    </div>
+                                    <p class="project-copy">
+                                        A lightweight, lightning-fast reasoning
+                                        model optimized for local consumer
+                                        hardware, tailored for rapid debugging
+                                        and inline code generation.
+                                    </p>
+                                    <div class="project-foot">
+                                        <div
+                                            class="command"
+                                            id="cmd-fine-phi4-mini"
+                                        >
+                                            ollama run kodecharya/fine-phi4-mini
+                                        </div>
+                                        <button
+                                            class="copy-btn"
+                                            type="button"
+                                            data-copy="ollama run kodecharya/fine-phi4-mini"
+                                        >
+                                            Copy Ollama Command
+                                        </button>
+                                    </div>
+                                </div>
+                            </article>
+
+                        </div>
+
+                        <div class="project-directory">
+                            <div
+                                class="section-head"
+                                style="margin-bottom: 18px"
+                            >
+                                <div>
+                                    <h2
+                                        class="section-title"
+                                        style="font-size: 1.45rem"
+                                    >
+                                        Selected GitHub Projects
+                                    </h2>
+                                </div>
+                                <p class="section-subtitle">
+                                    Curated projects and contributions from
+                                    your GitHub profile.
+                                </p>
+                            </div>
+
+                            <div class="directory-grid">
+                                <a
+                                    class="mini-project"
+                                    href="https://github.com/KodeCharya/ai-kernal-agent"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    <span class="mini-tag">AI Ops</span>
+                                    <h3>ai-kernal-agent</h3>
+                                    <p>Agentic system for kernel assistance.</p>
+                                </a>
+                                <a
+                                    class="mini-project"
+                                    href="https://github.com/KodeCharya/universal_transformer"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    <span class="mini-tag">AI / ML</span>
+                                    <h3>universal_transformer</h3>
+                                    <p>Multimodal transformer in PyTorch.</p>
+                                </a>
+                                <a
+                                    class="mini-project"
+                                    href="https://github.com/KodeCharya/TradingAgents"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    <span class="mini-tag">Contribute</span>
+                                    <h3>TradingAgents</h3>
+                                    <p>
+                                        Contribution work in AI-driven trading
+                                        systems.
+                                    </p>
+                                </a>
+                                <a
+                                    class="mini-project"
+                                    href="https://github.com/KodeCharya/Linear-Transformer"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    <span class="mini-tag">Architecture</span>
+                                    <h3>Linear-Transformer</h3>
+                                    <p>Efficient transformer implementation.</p>
+                                </a>
+                                <a
+                                    class="mini-project"
+                                    href="https://github.com/KodeCharya/News-Neutralizer"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    <span class="mini-tag">NLP</span>
+                                    <h3>News-Neutralizer</h3>
+                                    <p>Text neutrality and bias reduction.</p>
+                                </a>
+                                <a
+                                    class="mini-project"
+                                    href="https://github.com/KodeCharya/unified-ai-library"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    <span class="mini-tag">Framework</span>
+                                    <h3>unified-ai-library</h3>
+                                    <p>Modular AI library for deep learning.</p>
+                                </a>
+                                <a
+                                    class="mini-project"
+                                    href="https://github.com/KodeCharya/tensorflow"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    <span class="mini-tag">Contribute</span>
+                                    <h3>tensorflow</h3>
+                                    <p>Contribution work in TensorFlow.</p>
+                                </a>
+                                <a
+                                    class="mini-project"
+                                    href="https://github.com/KodeCharya/AutoDL"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    <span class="mini-tag">Automation</span>
+                                    <h3>AutoDL</h3>
+                                    <p>Automated dataset-to-model training.</p>
+                                </a>
+                                <a
+                                    class="mini-project"
+                                    href="https://github.com/KodeCharya/ParallelComputing-CPU"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    <span class="mini-tag">Systems</span>
+                                    <h3>ParallelComputing-CPU</h3>
+                                    <p>Parallel CPU performance utilities.</p>
+                                </a>
+                                <a
+                                    class="mini-project"
+                                    href="https://github.com/KodeCharya/system-resources-manager-ai"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    <span class="mini-tag">AI Tools</span>
+                                    <h3>system-resources-manager-ai</h3>
+                                    <p>AI-assisted system resource control.</p>
+                                </a>
+                                <a
+                                    class="mini-project"
+                                    href="https://github.com/KodeCharya/gemini-RAG-chatbot"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    <span class="mini-tag">RAG</span>
+                                    <h3>gemini-RAG-chatbot</h3>
+                                    <p>Retrieval-augmented chatbot workflow.</p>
+                                </a>
+                                <a
+                                    class="mini-project"
+                                    href="https://github.com/KodeCharya/DeepResearch"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    <span class="mini-tag">Research</span>
+                                    <h3>DeepResearch</h3>
+                                    <p>Research-oriented AI exploration.</p>
+                                </a>
+                                <a
+                                    class="mini-project"
+                                    href="https://github.com/KodeCharya/gen-ai-search"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    <span class="mini-tag">Search</span>
+                                    <h3>gen-ai-search</h3>
+                                    <p>Generative AI search and discovery.</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <footer class="footer" id="contact" data-reveal>
+                    <div class="shell footer-inner">
+                        <div class="socials" aria-label="Developer profiles">
+                            <a
+                                class="icon-btn"
+                                href="https://github.com/KodeCharya"
+                                target="_blank"
+                                rel="noreferrer"
+                                aria-label="GitHub"
+                            >
+                                <svg
+                                    width="20"
+                                    height="20"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    aria-hidden="true"
+                                >
+                                    <path
+                                        d="M12 2C6.48 2 2 6.55 2 12.16c0 4.48 2.87 8.28 6.84 9.6.5.1.66-.22.66-.48v-1.7c-2.78.62-3.37-1.34-3.37-1.34-.45-1.18-1.1-1.5-1.1-1.5-.9-.63.07-.62.07-.62 1 .07 1.53 1.05 1.53 1.05.89 1.56 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.37-2.22-.26-4.56-1.13-4.56-5.02 0-1.11.39-2.02 1.03-2.73-.1-.26-.45-1.3.1-2.7 0 0 .84-.27 2.75 1.04.8-.23 1.66-.35 2.51-.36.85.01 1.71.13 2.51.36 1.9-1.31 2.74-1.04 2.74-1.04.55 1.4.2 2.44.1 2.7.64.71 1.03 1.62 1.03 2.73 0 3.9-2.34 4.75-4.57 5 .36.32.68.96.68 1.93v2.86c0 .27.16.59.67.48A10.06 10.06 0 0 0 22 12.16C22 6.55 17.52 2 12 2Z"
+                                        fill="currentColor"
+                                    />
+                                </svg>
+                            </a>
+                            <a
+                                class="icon-btn"
+                                href="https://huggingface.co/KodeCharya"
+                                target="_blank"
+                                rel="noreferrer"
+                                aria-label="Hugging Face"
+                            >
+                                <svg
+                                    width="20"
+                                    height="20"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    aria-hidden="true"
+                                >
+                                    <path
+                                        d="M7.5 9.2c.9 0 1.6.7 1.6 1.6S8.4 12.4 7.5 12.4 5.9 11.7 5.9 10.8 6.6 9.2 7.5 9.2Zm9 0c.9 0 1.6.7 1.6 1.6s-.7 1.6-1.6 1.6-1.6-.7-1.6-1.6.7-1.6 1.6-1.6Zm-4.5 9.1c2.3 0 4.3-1.4 5.1-3.3.1-.3-.1-.6-.4-.7-.3-.1-.6.1-.7.4-.7 1.5-2.2 2.4-4 2.4s-3.3-.9-4-2.4c-.1-.3-.5-.5-.8-.4-.3.1-.5.4-.4.7.9 1.9 2.9 3.3 5.2 3.3Z"
+                                        fill="currentColor"
+                                    />
+                                    <path
+                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2Zm0 18.3A8.3 8.3 0 1 1 12 3.7a8.3 8.3 0 0 1 0 16.6Z"
+                                        fill="currentColor"
+                                    />
+                                </svg>
+                            </a>
+                            <a
+                                class="icon-btn"
+                                href="https://ollama.com/KodeCharya"
+                                target="_blank"
+                                rel="noreferrer"
+                                aria-label="Ollama"
+                            >
+                                <svg
+                                    width="20"
+                                    height="20"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    aria-hidden="true"
+                                >
+                                    <path
+                                        d="M12 2.7c5.1 0 9.3 4.2 9.3 9.3S17.1 21.3 12 21.3 2.7 17.1 2.7 12 6.9 2.7 12 2.7Zm0 2A7.3 7.3 0 1 0 12 19.3 7.3 7.3 0 0 0 12 4.7Z"
+                                        fill="currentColor"
+                                    />
+                                    <path
+                                        d="M12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Z"
+                                        fill="currentColor"
+                                        opacity=".66"
+                                    />
+                                </svg>
+                            </a>
+                        </div>
+
+                        <div class="contact">
+                            <span>Collaboration inquiries:</span>
+                            <a href="mailto:hello@kodecharya.dev"
+                                >hello@kodecharya.dev</a
+                            >
+                        </div>
+                    </div>
+                </footer>
+            </main>
+        </div>
+
+        <div class="toast" id="toast" role="status" aria-live="polite">
+            Copied to clipboard.
+        </div>
+
+        <script>
+            const toast = document.getElementById("toast");
+            let toastTimer;
+
+            function showToast(message) {
+                toast.textContent = message;
+                toast.classList.add("is-visible");
+                clearTimeout(toastTimer);
+                toastTimer = setTimeout(
+                    () => toast.classList.remove("is-visible"),
+                    1600,
+                );
+            }
+
+            async function copyCommand(value) {
+                try {
+                    await navigator.clipboard.writeText(value);
+                    showToast("Copied: " + value);
+                } catch (error) {
+                    const textArea = document.createElement("textarea");
+                    textArea.value = value;
+                    textArea.style.position = "fixed";
+                    textArea.style.opacity = "0";
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    document.execCommand("copy");
+                    document.body.removeChild(textArea);
+                    showToast("Copied: " + value);
+                }
+            }
+
+            document.querySelectorAll("[data-copy]").forEach((button) => {
+                button.addEventListener("click", () =>
+                    copyCommand(button.dataset.copy),
+                );
+            });
+
+            const revealTargets = document.querySelectorAll("[data-reveal]");
+            revealTargets.forEach((node) => {
+                node.style.opacity = "0";
+                node.style.transform = "translateY(14px)";
+                node.style.transition =
+                    "opacity 500ms ease, transform 500ms ease";
+            });
+
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            entry.target.style.opacity = "1";
+                            entry.target.style.transform = "translateY(0)";
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                },
+                { threshold: 0.18 },
+            );
+
+            revealTargets.forEach((node) => observer.observe(node));
+        </script>
+    </body>
+</html>
